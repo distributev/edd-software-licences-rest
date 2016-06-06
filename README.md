@@ -1,0 +1,2 @@
+# edd-software-licences-rest
+The delivery of this project should be a small Wordpress plugin which will expose the Easy Digital Downloads Software Licensing add-on data through a REST endpoint which is returning JSON. For instance if there are 127 licenses in the Wordpress database all this data should be returned by the new REST endpoint. All the columns / data from the see-me.png should be available and correct in the returned JSON data.
