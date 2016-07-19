@@ -13,12 +13,18 @@ function eslr_edd_software_licences_rest($data) {
     return;
   }
 
+  if( !!$data['paged'] ) {
+    $data['posts_per_page'] = 10;
+  } else {
+    $data['posts_per_page'] = -1;
+  }
+
   // custom posts query with pagination
   $licenses = new WP_Query(array(
     'post_type'   => 'edd_license',
     'post_status' => 'publish',
-    'posts_per_page' => $data['posts_per_page'] ? $data['posts_per_page'] : -1,
-    'paged' => $data['paged'] ? $data['paged'] : 1
+    'posts_per_page' => $data['posts_per_page'],
+    'paged' => $data['paged']
   ));
 
   $licenses_array = [];
@@ -38,7 +44,7 @@ function eslr_edd_software_licences_rest($data) {
       $_edd_sl_exp_length = get_post_meta( get_the_ID(), '_edd_sl_exp_length', true);
       $_license['_edd_completed_date'] = get_the_date( 'M j, Y', get_the_ID() );
 
-      $_license['_edd_sl_expiration'] = date_i18n('M j, Y', get_post_meta( get_the_ID(), '_edd_sl_expiration', true ) );
+      $_license['_edd_sl_expiration'] = ( get_post_meta( get_the_ID(), '_edd_sl_expiration', true ) ) ? date_i18n('M j, Y', get_post_meta( get_the_ID(), '_edd_sl_expiration', true ) ) : "Lifetime";
       // created entry pushed to the licenses array
       array_push($licenses_array, $_license);
     }
@@ -49,15 +55,21 @@ function eslr_edd_software_licences_rest($data) {
 // register new routes for wp-json
 add_action( 'rest_api_init', function () {
 
-  // route returning all the results - /wp-json/eslr/all
-  register_rest_route( 'eslr', '/all', array(
+  // route returning all the results - /wp-json/wp/v2/licenses
+  register_rest_route( 'wp/v2', '/licenses', array(
     'methods' => 'GET',
     'callback' => 'eslr_edd_software_licences_rest',
+    'permission_callback' => function () {
+			return current_user_can( 'edit_others_posts' );
+		}
   ));
 
-  // route returning results with pagination - /wp-json/eslr/page/1/results/10
-	register_rest_route( 'eslr', '/page/(?P<paged>\d+)/results/(?P<posts_per_page>\d+)', array(
+  // route returning results with pagination - /wp-json/wp/v2/licenses/page/1
+	register_rest_route( 'wp/v2', '/licenses/page/(?P<paged>\d+)', array(
 		'methods' => 'GET',
 		'callback' => 'eslr_edd_software_licences_rest',
+    'permission_callback' => function () {
+			return current_user_can( 'edit_others_posts' );
+		}
 	));
 });
