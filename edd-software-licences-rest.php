@@ -8,9 +8,16 @@
 * License: GPLv2
 */
 
+// prevent direct access in wordpress
+if ( ! defined( 'ABSPATH' ) ) die( 'Error!' );
+
 function eslr_edd_software_licences_rest($data) {
   if( !class_exists('Easy_Digital_Downloads') || !class_exists('EDD_Software_Licensing') ) {
     return;
+  }
+
+  if( $data['key'] != 9637264772642634672636747 ) {
+    exit('{"error": "You are not authorized to view this page"}');
   }
 
   if( !!$data['paged'] ) {
@@ -56,20 +63,14 @@ function eslr_edd_software_licences_rest($data) {
 add_action( 'rest_api_init', function () {
 
   // route returning all the results - /wp-json/wp/v2/licenses
-  register_rest_route( 'wp/v2', '/licenses', array(
+  register_rest_route( 'wp/v2', '/licenses/key/(?P<key>\d+)', array(
     'methods' => 'GET',
-    'callback' => 'eslr_edd_software_licences_rest',
-    'permission_callback' => function () {
-			return current_user_can( 'edit_others_posts' );
-		}
+    'callback' => 'eslr_edd_software_licences_rest'
   ));
 
   // route returning results with pagination - /wp-json/wp/v2/licenses/page/1
-	register_rest_route( 'wp/v2', '/licenses/page/(?P<paged>\d+)', array(
+	register_rest_route( 'wp/v2', '/licenses/page/(?P<paged>\d+)/key/(?P<key>\d+)', array(
 		'methods' => 'GET',
-		'callback' => 'eslr_edd_software_licences_rest',
-    'permission_callback' => function () {
-			return current_user_can( 'edit_others_posts' );
-		}
+		'callback' => 'eslr_edd_software_licences_rest'
 	));
 });
