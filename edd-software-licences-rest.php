@@ -48,7 +48,8 @@ function eslr_edd_software_licences_rest($data) {
       $_license['_edd_sl_status']  = get_post_meta( get_the_ID(), '_edd_sl_status', true );
       $_license['_edd_sl_key']     = get_post_meta( get_the_ID(), '_edd_sl_key', true );
       $_edd_sl_user_id = get_post_meta( get_the_ID(), '_edd_sl_user_id', true);
-      $_license['_edd_sl_user_name'] = (get_userdata( $_edd_sl_user_id )->display_name != "") ?  get_userdata( $_edd_sl_user_id )->display_name : get_userdata( $_edd_sl_user_id )->user_login;
+      // $_license['_edd_sl_user_name'] = (get_userdata( $_edd_sl_user_id )->display_name != "") ?  get_userdata( $_edd_sl_user_id )->display_name : get_userdata( $_edd_sl_user_id )->user_login;
+      $_license['_edd_sl_user_name'] = get_ed_user_name($_edd_sl_user_id);
       // $_license['_edd_sl_site_count'] = get_post_meta( get_the_ID(), '_edd_sl_site_count', true );
       $_license['_edd_sl_site_count'] = get_site_count( get_the_ID() );
       $_license['_edd_sl_limit'] = (get_post_meta( get_the_ID(), '_edd_sl_limit', true ) != null) ?  get_post_meta( get_the_ID(), '_edd_sl_limit', true ) : 1;

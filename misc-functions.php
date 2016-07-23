@@ -27,3 +27,13 @@
 
     return (bool) apply_filters( 'edd_sl_force_activation_increase', $ret, $license_id );
   }
+
+  function get_ed_user_name($customer_id) {
+    global $wpdb;
+
+    $result = $wpdb->get_results(
+                $wpdb->prepare('SELECT * FROM wp_edd_customers WHERE user_id = %d', $customer_id)
+              );
+
+    return $result[0]->name;
+  }
