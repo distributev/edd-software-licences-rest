@@ -47,10 +47,12 @@ function eslr_edd_software_licences_rest($data) {
       $_license['_edd_sl_name']    = get_the_title( get_the_ID() );
       $_license['_edd_sl_status']  = get_post_meta( get_the_ID(), '_edd_sl_status', true );
       $_license['_edd_sl_key']     = get_post_meta( get_the_ID(), '_edd_sl_key', true );
-      $_edd_sl_user_id = get_post_meta( get_the_ID(), '_edd_sl_user_id', true);
-      $customer = new EDD_Customer($_edd_sl_user_id);
-      $_license['_edd_sl_user_name'] = $customer->name;
-      // $_license['_edd_sl_site_count'] = get_post_meta( get_the_ID(), '_edd_sl_site_count', true );
+      
+      // get user name from payment id
+      $_edd_sl_payment_id = get_post_meta( get_the_ID(), '_edd_sl_payment_id', true);
+      $user_info = edd_get_payment_meta_user_info($_edd_sl_payment_id);
+      $_license['_edd_sl_user_name'] = $user_info['first_name'] . ' ' .$user_info['last_name'];
+
       $_license['_edd_sl_site_count'] = get_site_count( get_the_ID() );
       $_license['_edd_sl_limit'] = (get_post_meta( get_the_ID(), '_edd_sl_limit', true ) != null) ?  get_post_meta( get_the_ID(), '_edd_sl_limit', true ) : 1;
       $_edd_sl_exp_length = get_post_meta( get_the_ID(), '_edd_sl_exp_length', true);
