@@ -21,3 +21,9 @@
 	  $ret = isset( $edd_options['edd_sl_force_increase'] );
 	  return (bool) apply_filters( 'edd_sl_force_activation_increase', $ret, $license_id );
 	}
+
+	function edd_get_user_name($payment_id) {
+		$user_info = edd_get_payment_meta_user_info($payment_id);
+		$edd_customer = new EDD_Customer($user_info['email']);
+		return $edd_customer->name;
+	}
